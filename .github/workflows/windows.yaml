@@ -34,8 +34,8 @@ jobs:
         $dxcDir = Join-Path $env:RUNNER_TEMP dxc
         Invoke-WebRequest $asset.browser_download_url -OutFile "$env:RUNNER_TEMP/dxc.zip"
         Expand-Archive "$env:RUNNER_TEMP/dxc.zip" -DestinationPath $dxcDir
-        $dxc = Get-ChildItem $dxcDir -Filter dxc.exe -Recurse | Select-Object -First 1
-        if ($null -eq $dxc) { throw 'dxc.exe was not found in the downloaded archive.' }
+        $dxc = Get-ChildItem $dxcDir -Filter dxc.exe -Recurse | Where-Object { $_.FullName -match '[\\/]x64[\\/]dxc\.exe$' } | Select-Object -First 1
+        if ($null -eq $dxc) { throw 'x64 dxc.exe was not found in the downloaded archive.' }
         "dxc_path=$($dxc.FullName)" >> $env:GITHUB_OUTPUT
 
     - name: Install CMake
